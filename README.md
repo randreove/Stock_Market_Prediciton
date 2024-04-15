@@ -7,3 +7,13 @@ In the present work we have tried to find an Artificial Intelligence model that 
 For the prediction, 6 different models have been developed combining different strategies and hybrid architectures in order to obtain an accurate model. We have worked on two base models, formed by LSTM and GRU networks, commonly applied on this type of tasks, and two dimensionality reduction methods have been applied on them, such as PCA and AutoEncoder.
 
 After training the different models and evaluating the results it has been observed that the application of PCA algorithms for data dimensionality reduction can help the model to obtain better results, both computational and train. 
+
+
+**Preprocess execution order:**
+1. In /stock_price_scraper run EXECUTE_PYTHON_FILES.py
+2. When it says "from which lists:" indicate "a" and press Enter
+3. Repeat this step
+4. In the main folder, execute Procesado_indicadores_indicadores_graficas.py
+5. Apply Model_final.ipynb on the preprocessed data located in /stock_price_scraper/Data/Data_preprocessed.
+
+Pay attention to the file paths.

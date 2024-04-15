@@ -10,10 +10,7 @@ After training the different models and evaluating the results it has been obser
 
 
 **Preprocess execution order:**
-1. In /stock_price_scraper run EXECUTE_PYTHON_FILES.py
+1. In /Data_preprocess run EXECUTE_PYTHON_FILES.py. 
 2. When it says "from which lists:" indicate "a" and press Enter
-3. Repeat this step
-4. In the main folder, execute Procesado_indicadores_indicadores_graficas.py
-5. Apply Model_final.ipynb on the preprocessed data located in /stock_price_scraper/Data/Data_preprocessed.
-
-Pay attention to the file paths.
+3. Repeat this step. This will automatically run all the python scripts needed to download the data from Yahoo Finance, add the technical indicators, perform the preprocessing, export preprocessed data and generate graphs.
+5. Apply Model_final.ipynb on the preprocessed data located in /Data_preprocess/Data/Data_preprocessed.

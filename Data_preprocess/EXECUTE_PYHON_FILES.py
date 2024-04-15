@@ -1,7 +1,7 @@
 import os
 
 # List of .py files to execute
-file_list = ['add_Mark.py', 'get_price_from_yahoo.py', 'get_industry_from_yahoo.py']
+file_list = ['add_Mark.py', 'get_price_from_yahoo.py', 'get_industry_from_yahoo.py', 'Procesado_indicadores_graficas.py']
 
 # Iterate over the file list
 for file in file_list:

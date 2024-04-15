@@ -1,23 +1,31 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
 import talib
 import os
 import glob
 import matplotlib.dates as mdates
 import seaborn as sns
 
-# Cargo el Dataset
-# df = pd.read_csv('/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/ACS.csv')
+# Path from data import
+import_path = os.getcwd() + '/Data/'
+
+# Path for data preprocessed extraction
+preprocessed_data_extraction_path = os.getcwd() + '/Data/Data_preprocesed/'
+
+# Path for figures extraction
+figures_extraction_path = os.getcwd() + '/Data/Figures/'
+
+# Path for describe metrics extraction
+describe_metrics_straction_path = os.getcwd()
 
 # Specify the folder path
-folder_path = '/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/'
+folder_path = os.getcwd() + '/Data/'
+# folder_path = '/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/'
 
+# Read and import all the CSV files in the folder
 # Get a list of all CSV files in the folder
-csv_files = glob.glob(folder_path + '*.csv')
+csv_files = glob.glob(import_path + '*.csv')
 
 # Create an empty dictionary to store the dataframes
 dataframes = {}
@@ -32,19 +40,20 @@ for file in csv_files:
     # Read the CSV file and store the dataframe
     dataframes[filename] = pd.read_csv(file)
 
+# Do de preprocess of the data and figures generation
 # Access the dataframes using the filename as the key
 for filename, df in dataframes.items():
     print(f"Procesado for {filename}:")
     #print(df.head())
     #print()
 
-    # Elimina las filas en blanco
+    # Drop empty rows
     df = df[df['Volume'] != 0].dropna()
     
-    # Vamos a convertir la fecha en tipo fecha
+    # Convert Date to datetime
     df['Date'] = pd.to_datetime(df['Date'])
     
-    # Añadimos variables deseadas
+    # Add technical indicators
 
     # SMA
     SMA = talib.SMA(df['Close'], timeperiod=14)
@@ -80,22 +89,21 @@ for filename, df in dataframes.items():
     df['ADX'] = ADX
 
     print(f'Extraccion for {filename}')
-    
-    PATH_Extract = '/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/Data_preprocesed/'
 
-    # Create the PATH_Extract folder if it doesn't exist
-    if not os.path.exists(PATH_Extract):
-        os.makedirs(PATH_Extract)
+    # Create the preprocessed_data_extraction_path folder if it doesn't exist
+    if not os.path.exists(preprocessed_data_extraction_path):
+        os.makedirs(preprocessed_data_extraction_path)
 
-    # Extract each dataframe to a CSV file in the PATH_Extract folder
-    df.to_csv(os.path.join(PATH_Extract, f'{filename}_preprocessed.csv'), index=False)
+    # Extract each dataframe to a CSV file in the preprocessed_data_extraction_path folder
+    df.to_csv(os.path.join(preprocessed_data_extraction_path, f'{filename}_preprocessed.csv'), index=False)
 
     
+    #generate figures
     print(f'Generando graficas {filename}')
     df = df[df['Volume'] != 0].dropna()
 
         
-    # Vamos a representar la SMA y el precio de cierre
+    # Represent SMA and close price
     plt.figure(figsize=(16,8))
     plt.title(f'Close Price History, {filename}')  # Fix: Enclose variable names in quotes
     plt.plot(df['Date'], df['Close'], label='Close Price')
@@ -104,10 +112,9 @@ for filename, df in dataframes.items():
     plt.xlabel('Date')
     plt.ylabel('Price')
     plt.legend(loc='upper left')
-    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  # Format the x-axis as dates
     plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())  # Automatically set the tick positions
     plt.gcf().autofmt_xdate()  # Rotate and align the x-axis labels
-    plt.savefig(f'/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/Figures/{filename}_Close_Price_History.png')
+    plt.savefig(os.path.join(figures_extraction_path, f'{filename}_Close_Price_History.png'))
     # plt.show()
 
 
@@ -116,7 +123,7 @@ for filename, df in dataframes.items():
     plt.title(f'Box Plot of Close Price, {filename}')
     plt.ylabel('Frequency')
     plt.xlabel('Close Price')
-    plt.savefig(f'/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/Figures/{filename}_box_plot.png')
+    plt.savefig(os.path.join(figures_extraction_path, f'{filename}_box_plot.png'))
     # plt.show()
         
         
@@ -127,12 +134,9 @@ for filename, df in dataframes.items():
     plt.title(f'Distribution of Close Price, {filename}')
     plt.xlabel('Close Price')
     plt.ylabel('Frequency')
-    plt.savefig(f'/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/Figures/{filename}_distribution.png')
+    plt.savefig(os.path.join(figures_extraction_path, f'{filename}_distribution.png'))
     # plt.show()
-    
-    
-    # print(df['Close'].describe())
-    
+        
     # Append the describe metrics for df to the list
     describe_metrics.append(df['Close'].describe()) 
     
@@ -151,5 +155,5 @@ df_describe_metrics['Hay_outliers'] = (df_describe_metrics['Limite_inferior'] > 
 
 
 # Export the DataFrame to a CSV file
-df_describe_metrics.to_csv('/Users/randreove/Documents/Rafa/VIU/TFM/Codigo/data_scraper/stock_price_scraper/Data/describe_metrics.csv', index=False)
+df_describe_metrics.to_csv(os.path.join(describe_metrics_straction_path, 'describe_metrics.csv'), index=False)
 
